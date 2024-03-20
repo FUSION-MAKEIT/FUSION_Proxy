@@ -1,27 +1,25 @@
 const http = require('http');
 
+const serverUrl = 'http://localhost:8080'; // Change this to your server URL
+
 const options = {
-  hostname: 'localhost',
-  port: 8008,
-  path: '', // Path to proxy requests to
   method: 'GET',
 };
 
-const req = http.request(options, (res) => {
-  console.log(`STATUS: ${res.statusCode}`);
-  console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
-  res.setEncoding('utf8');
+const req = http.request(serverUrl, options, (res) => {
+  let data = '';
+
   res.on('data', (chunk) => {
-    console.log(`BODY: ${chunk}`);
+    data += chunk;
   });
+
   res.on('end', () => {
-    console.log('No more data in response.');
+    console.log('Response from server:', data);
   });
 });
 
-req.on('error', (e) => {
-  console.error(`Problem with request: ${e.message}`);
+req.on('error', (error) => {
+  console.error('Error connecting to server:', error.message);
 });
 
-// Sending a basic request
 req.end();
